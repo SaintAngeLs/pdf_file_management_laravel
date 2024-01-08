@@ -20,6 +20,10 @@
             <!-- Toasts will appear here -->
         </div>
     </div>
+    <div class="d-flex justify-content-between mb-3">
+          <div></div> <!-- Placeholder for left alignment -->
+          <a class="btn btn-sm btn-primary" href="<?php echo e(route('document.add')); ?>">Add New File</a>
+    </div>
     <div class="table-responsive">
         <table class="table">
           <thead>
@@ -52,14 +56,14 @@
                 <!-- <td><?php echo e($document->status ? 'Visible' : 'Invisible'); ?></td> -->
 
                 <td>
-                    <a class="btn btn-dark btn-sm" href="#" onclick="viewPdf('<?php echo e(route('pdf.show', ['pdfName' => $document->pdf])); ?>', '<?php echo e($document->pdf); ?>')">View PDF</a>
-                    <button class="btn btn-success btn-sm"  onclick="copyToClipboard('<?php echo e(route('article.view', ['hash' => $document->hash])); ?>')">Copy Link</button>
-                    <a class="btn btn-primary btn-sm" href="<?php echo e(route('document.edit', ['documentId' => $document->id])); ?>">Edit</a>
-                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<?php echo e($document->id); ?>">
-                        Delete
-                    </button>
-
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                        <a class="btn btn-dark btn-sm mb-2 mb-md-0 me-md-2" href="#" onclick="viewPdf('<?php echo e(route('pdf.show', ['pdfName' => $document->pdf])); ?>', '<?php echo e($document->pdf); ?>')">View PDF</a>
+                        <button class="btn btn-success btn-sm mb-2 mb-md-0 me-md-2" onclick="copyToClipboard('<?php echo e(route('article.view', ['hash' => $document->hash])); ?>')">Copy Link</button>
+                        <a class="btn btn-primary btn-sm mb-2 mb-md-0 me-md-2" href="<?php echo e(route('document.edit', ['documentId' => $document->id])); ?>">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<?php echo e($document->id); ?>">Delete</button>
+                    </div>
                 </td>
+
 
                 <!-- <td>
 
@@ -111,12 +115,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                showToast('Link is copied to clipboard');
-            }).catch(function(error) {
-                showToast('Error in copying text: ' + error);
-            });
+         function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                // If navigator.clipboard is supported and in a secure context
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast('The link is copied to clipboard.');
+                }).catch(function(error) {
+                    showToast('Error in copying text: ' + error);
+                });
+            } else {
+                // Fallback method for older browsers or non-secure contexts
+                var textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'The link is copied to clipboard.' : 'Error in copying text.';
+                    showToast(msg);
+                } catch (err) {
+                    showToast('Error in copying text: ' + err);
+                }
+                document.body.removeChild(textArea);
+            }
         }
 
         function showToast(message) {

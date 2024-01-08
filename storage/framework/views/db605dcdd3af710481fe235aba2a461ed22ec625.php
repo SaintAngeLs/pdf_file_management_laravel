@@ -77,7 +77,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?php echo e(route('document')); ?>">View</a></li>
-                        <li><a class="dropdown-item" href="<?php echo e(route('document.add')); ?>">Add</a></li>
+                        <li><a class="dropdown-item" href="<?php echo e(route('document.add')); ?>">Add New File</a></li>
                     </ul>
                 </li>
 
